@@ -214,7 +214,58 @@ class Fusion:
 
             R = R_y.dot(R_x)
             Rs.append(R)
+        # Rs = [np.array([[1, 0, 0],
+        #                [0, 1, 0],
+        #                [0, 0, 1]]),
+        #       np.array([[1, 0, 0],
+        #                 [0, 0, -1],
+        #                 [0, 1, 0]]),
+        #       np.array([[1, 0, 0],
+        #                 [0, 0, 1],
+        #                 [0, -1, 0]]),
+        #       np.array([[1, 0, 0],
+        #                 [0, -1, 0],
+        #                 [0, 0, -1]]),
+        #       np.array([[0, 0, -1],
+        #                 [0, 1, 0],
+        #                 [1, 0, 0]]),
+        #       np.array([[0, 0, 1],
+        #                 [0, 1, 0],
+        #                 [-1, 0, 0]]),
+        #       np.array([[0, 0, 1],
+        #                 [0, 1, 0],
+        #                 [-1, 0, 0]]),
+        #       ]
+        Rs = []
+        angle_x = [5, 10, -5, -10, 90, 120, 150, 180, -90, -120, -150]
+        angle_y = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
+        for rot_x in angle_x:
+            for rot_y in angle_y:
+                R_x = np.array([[1, 0, 0],
+                                [0, math.cos(rot_x), -math.sin(rot_x)],
+                                [0, math.sin(rot_x), math.cos(rot_x)]])
+                R_y = np.array([[math.cos(rot_y), 0, math.sin(rot_y)],
+                                [0, 1, 0],
+                                [-math.sin(rot_y), 0, math.cos(rot_y)]])
+                # R = R_x.dot(R_y)
+                R = R_y.dot(R_x)
+                Rs.append(R)
 
+        # for rot_x in angle_x:
+        #     Rs.append(np.array([[1, 0, 0],
+        #                     [0, math.cos(rot_x), -math.sin(rot_x)],
+        #                     [0, math.sin(rot_x), math.cos(rot_x)]]))
+        # angle_y = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
+        # for rot_y in angle_y:
+        #     Rs.append(np.array([[math.cos(rot_y), 0, math.sin(rot_y)],
+        #                     [0, 1, 0],
+        #                     [-math.sin(rot_y), 0, math.cos(rot_y)]]))
+        # angle_z = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, 90, 105, 120, 135, 150, 165,
+        #            180, -90, -105, -120, -135, -150, -165]
+        # for rot_z in angle_z:
+        #     Rs.append(np.array([[math.cos(rot_z), -math.sin(rot_z), 0],
+        #                         [math.sin(rot_z), math.cos(rot_z), 0],
+        #                         [0, 0, 1]]))
         return Rs
 
     def render(self, mesh, Rs):
@@ -246,7 +297,8 @@ class Fusion:
             # (by subtracting a constant from the depth map).
             # Dilation additionally enlarges thin structures (e.g. for chairs).
             depthmap -= self.options.depth_offset_factor * self.voxel_size
-            depthmap = ndimage.morphology.grey_erosion(depthmap, size=(3, 3))
+            # depthmap = ndimage.morphology.grey_erosion(depthmap, size=(3, 3))
+            depthmap = ndimage.grey_erosion(depthmap, size=(3, 3))
 
             depthmaps.append(depthmap)
 

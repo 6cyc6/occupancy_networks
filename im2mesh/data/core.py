@@ -65,7 +65,7 @@ class Shapes3dDataset(data.Dataset):
 
         if os.path.exists(metadata_file):
             with open(metadata_file, 'r') as f:
-                self.metadata = yaml.load(f)
+                self.metadata = yaml.load(f, Loader=yaml.Loader)
         else:
             self.metadata = {
                 c: {'id': c, 'name': 'n/a'} for c in categories

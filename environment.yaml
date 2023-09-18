@@ -1,4 +1,4 @@
-name: mesh_funcspace
+name: occ
 channels:
   - conda-forge
   - pytorch

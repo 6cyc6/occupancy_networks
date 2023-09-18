@@ -15,7 +15,7 @@ data:
   model_file: model.off
   watertight_file: model_watertight.off
   img_folder: img
-  img_size: 224 
+  img_size: 224
   img_with_camera: false
   img_augment: false
   n_views: 24

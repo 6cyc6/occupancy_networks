@@ -22,6 +22,7 @@ pykdtree = Extension(
     language='c',
     extra_compile_args=['-std=c99', '-O3', '-fopenmp'],
     extra_link_args=['-lgomp'],
+    include_dirs=[numpy.get_include()],
 )
 
 # mcubes (marching cubes algorithm)
@@ -105,7 +106,11 @@ ext_modules = [
 
 setup(
     ext_modules=cythonize(ext_modules),
+    include_dirs=[numpy.get_include()],
+#    cmdclass={
+ #       'build_ext': BuildExtension
+ #   }
     cmdclass={
-        'build_ext': BuildExtension
+        'build_ext': BuildExtension.with_options(use_ninja=False)
     }
 )

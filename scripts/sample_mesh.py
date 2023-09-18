@@ -13,7 +13,7 @@ from im2mesh.utils.libmesh import check_mesh_contains
 
 
 parser = argparse.ArgumentParser('Sample a watertight mesh.')
-parser.add_argument('in_folder', type=str,
+parser.add_argument('--in_folder', type=str,
                     help='Path to input watertight meshes.')
 parser.add_argument('--n_proc', type=int, default=0,
                     help='Number of processes to use.')
@@ -37,7 +37,7 @@ parser.add_argument('--pointcloud_size', type=int, default=100000,
 
 parser.add_argument('--voxels_folder', type=str,
                     help='Output path for voxelization.')
-parser.add_argument('--voxels_res', type=int, default=32,
+parser.add_argument('--voxels_res', type=int, default=512,
                     help='Resolution for voxelization.')
 
 parser.add_argument('--points_folder', type=str,
@@ -62,7 +62,7 @@ parser.add_argument('--overwrite', action='store_true',
 parser.add_argument('--float16', action='store_true',
                     help='Whether to use half precision.')
 parser.add_argument('--packbits', action='store_true',
-                help='Whether to save truth values as bit array.')
+                    help='Whether to save truth values as bit array.')
     
 def main(args):
     input_files = glob.glob(os.path.join(args.in_folder, '*.off'))
@@ -155,7 +155,8 @@ def export_voxels(mesh, modelname, loc, scale, args):
         return
 
     res = args.voxels_res
-    voxels_occ = voxels.voxelize(mesh, res)
+    # voxels_occ = voxels.voxelize(mesh, res)
+    voxels_occ = voxels.voxelize_ray(mesh, res)
 
     voxels_out = binvox_rw.Voxels(voxels_occ, (res,) * 3,
                                   translate=loc, scale=scale,
@@ -181,8 +182,19 @@ def export_points(mesh, modelname, loc, scale, args):
     n_points_surface = args.points_size - n_points_uniform
 
     boxsize = 1 + args.points_padding
-    points_uniform = np.random.rand(n_points_uniform, 3)
-    points_uniform = boxsize * (points_uniform - 0.5)
+    # points_uniform = np.random.rand(n_points_uniform, 3)
+    # points_uniform = boxsize * (points_uniform - 0.5)
+
+    points = np.meshgrid(
+        np.linspace(-0.5, 0.5, 128),
+        np.linspace(-0.5, 0.5, 128),
+        np.linspace(-0.5, 0.5, 128)
+    )
+    points = np.stack(points)
+    points = np.swapaxes(points, 1, 2)
+    points = points.reshape(3, -1).transpose().astype(np.float32)
+    points_uniform = boxsize * points
+
     points_surface = mesh.sample(n_points_surface)
     points_surface += args.points_sigma * np.random.randn(n_points_surface, 3)
     points = np.concatenate([points_uniform, points_surface], axis=0)

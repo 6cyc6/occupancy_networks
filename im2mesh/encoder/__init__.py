@@ -1,6 +1,6 @@
 from im2mesh.encoder import (
     conv, pix2mesh_cond, pointnet,
-    psgn_cond, r2n2, voxels,
+    psgn_cond, r2n2, voxels, vnn, vnn_tnet, vnn2
 )
 
 
@@ -17,4 +17,12 @@ encoder_dict = {
     'psgn_cond': psgn_cond.PCGN_Cond,
     'voxel_simple': voxels.VoxelEncoder,
     'pixel2mesh_cond': pix2mesh_cond.Pix2mesh_Cond,
+    'vnn_dgcnn': vnn.VNN_DGCNN,
+    'vnn_pointnet_simple': vnn.VNN_SimplePointnet,
+    'vnn_pointnet_resnet': vnn.VNN_ResnetPointnet,
+    'vnn_tnet_simple': vnn_tnet.SimplePointnet,
+    'vnn_tnet_resnet': vnn_tnet.ResnetPointnet,
+    'vnn2_dgcnn': vnn2.VNN_DGCNN,
+    'vnn2_pointnet_simple': vnn2.VNN_SimplePointnet,
+    'vnn2_pointnet_resnet': vnn2.VNN_ResnetPointnet
 }
